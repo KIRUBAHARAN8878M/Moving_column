@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moving Columns</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            width: 80%;
+            height: 15rem;
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            border: 2px solid #333;
+            background-color: #fff;
+            overflow: hidden;
+            position: relative;
+background-color: #000000;
+        }
+
+        .column {
+            width: 20%;
+            background-color: red;
+            border-radius: 4px;
+            transition: height 0.2s ease-in-out;
+        }
+
+        .controls {
+            margin-top: 1rem;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            margin: 0 0.5rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        button.reset {
+            background-color: #28a745;
+        }
+
+        button.stop {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container">
+        <!-- Columns will be dynamically created -->
+    </div>
+    <div class="controls">
+        <button id="start">Start</button>
+        <button id="stop" class="stop">Stop</button>
+        <button id="reset" class="reset">Reset</button>
+    </div>
+
+    <script>
+        const container = document.getElementById('container');
+        const startBtn = document.getElementById('start');
+        const stopBtn = document.getElementById('stop');
+        const resetBtn = document.getElementById('reset');
+        let animationInterval = null;
+
+        // Function to create columns (initially filled)
+        function createColumns(initialFill = true) {
+            container.innerHTML = ''; // Clear existing columns
+            for (let i = 0; i < 5; i++) {
+                const column = document.createElement('div');
+                column.classList.add('column');
+                column.style.backgroundColor = getRandomColor();
+                column.style.height = initialFill ? '15rem' : '0'; // Fill or empty initially
+                container.appendChild(column);
+            }
+        }
+
+        // Function to start animation
+        function startAnimation() {
+            const columns = document.querySelectorAll('.column');
+            if (animationInterval) return; // Prevent multiple intervals
+
+            animationInterval = setInterval(() => {
+                columns.forEach(column => {
+                    column.style.height = Math.random() * 15 + 'rem'; // Random height up to 7rem
+                });
+            }, 500);
+        }
+
+        // Function to stop animation
+        function stopAnimation() {
+            clearInterval(animationInterval);
+            animationInterval = null;
+        }
+
+        // Function to reset columns
+        function resetColumns() {
+            stopAnimation();
+            const columns = document.querySelectorAll('.column');
+            columns.forEach(column => {
+                column.style.height = '7rem'; // Reset to full height
+            });
+        }
+
+        // Helper function to generate random colors
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        // Event listeners
+        startBtn.addEventListener('click', () => {
+            startAnimation();
+        });
+
+        stopBtn.addEventListener('click', stopAnimation);
+        resetBtn.addEventListener('click', resetColumns);
+
+        // Initialize with columns filled
+        createColumns();
+    </script>
+</body>
+</html>
